@@ -85,7 +85,14 @@
                                 //alert('指定的数据库不存在，系统也无法创建，请先通过其他方式建立好数据库！');
                                 alert(msg.msg);
                             }
-
+                        },
+                        error: function(xhr, status, error) {
+                            if (xhr.status === 503 && retryCount < maxRetries) {
+                                // 遇到503错误且未达到最大重试次数时，进行重试
+                                retryCount++;
+                                console.log('Encountered 503 error. Retrying...');
+                                makeAjaxRequest(); // 重新发起请求
+                            }
                         }
                     });
                 },

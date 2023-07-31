@@ -49,3 +49,25 @@ pwd:123456
 2、如果运行docker-compose up -d 启动失败，请查看docker-compose.yml 修改里面镜像地址或其它配置
 
 
+
+### 增加supervisor方法
+sudo docker cp /CRMEB/docker-compose/php/supervisord.conf crmeb_php:/supervisor/ &&
+sudo docker cp /CRMEB/docker-compose/php/queue.ini crmeb_php:/supervisor/ &&
+sudo docker cp /CRMEB/docker-compose/php/timer.ini crmeb_php:/supervisor/ &&
+sudo docker cp /CRMEB/docker-compose/php/worker.ini crmeb_php:/supervisor/
+# 进入容器
+sudo docker exec -it -u root crmeb_php /bin/bash
+# 执行
+pip install supervisor &&
+supervisord -c /supervisor/supervisord.conf
+
+# 注意：
+queue消息队列会报redis链接异常，进入crmeb根目录找.env文件，手动修改参数，如下即可
+[REDIS]
+REDIS_HOSTNAME = crmeb_redis
+PORT = 6379
+REDIS_PASSWORD = 123456
+SELECT = 0
+
+
+
